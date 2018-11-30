@@ -12,7 +12,6 @@ module top(
 	input           DSP_EMIFCE0_N       ,
 	inout   [15:0]  DSP_EMIFD           ,
 	input           DSP_EMIFOE_N        ,
-	input           DSP_EMIFRW_N        ,
 	output          DSP_EMIFWAIT0       ,
 	output          DSP_EMIFWAIT1       ,
 	input           DSP_EMIFWE_N        ,
@@ -87,7 +86,7 @@ module top(
 
 	wire  emif_dpram_wen,emif_dpram_ren; wire  [15:00]  emif_dpram_wdata,emif_dpram_rdata; wire  [23:00] emif_dpram_addr;
 
-	emif_intf u_emif_intf (
+	emif_intf_z u_emif_intf_z(
 		.clk_ref          (clk_100m                      ),
 		.rst_n            (rst_n                         ),
 		.emif_data_z      (DSP_EMIFD                     ),
@@ -96,8 +95,6 @@ module top(
 		.emif_cen_i       (DSP_EMIFCE0_N                 ),
 		.emif_wen_i       (DSP_EMIFWE_N                  ),
 		.emif_oen_i       (DSP_EMIFOE_N                  ),
-		.emif_wait_o      ({DSP_EMIFWAIT1,DSP_EMIFWAIT0} ),
-		.emif_rnw_i       (DSP_EMIFRW_N                  ),
 
 		.emif_dpram_wen   (emif_dpram_wen                ),
 		.emif_dpram_ren_2 (emif_dpram_ren                ),
@@ -105,7 +102,7 @@ module top(
 		.emif_dpram_wdata (emif_dpram_wdata              ),
 		.emif_dpram_rdata (emif_dpram_rdata              )
 		);
-
+		
 	wire   trastart_flag; wire [9:0] db; wire [7:0] ramd_tx;
 
 	dsp_hdlc_ctrl  u_dsp_hdlc_ctrl(
@@ -197,7 +194,7 @@ module top(
 	  .doutb ( emif_dpram_rdata        )
 	);
 
-	`ifdef DEGBUG
+	`ifdef DEBUG
 		ila_8_16384_1120  u_ila_8_16384_1120 (
 			.clk    ( clk_100m         ), 
 			.probe0 (datat             ),
@@ -217,5 +214,8 @@ module top(
 	
 	assign boot_strap0_14   = 0;      assign boot_strap0_15 = inr_rx;
 	assign RS485_3_CLK_D_18 = clk_2m; assign RS485_3_D_18   = datat;
+	
+	assign DSP_EMIFWAIT0 = 0; assign DSP_EMIFWAIT1 = 0; 
 
+	
 endmodule

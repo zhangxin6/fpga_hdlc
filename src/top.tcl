@@ -1,14 +1,8 @@
-#A Vivado script that demonstrates a very simple RTL-to-bitstream batch flow 
-# 
 #NOTE: typical usage would be "vivado -mode tcl -source ./Desktop/simple1.tcl"
-# 
-#STEP #0: define output directory area.
-
 set verilogdir C:/Users/zhang/iverilog_testbench
 set sourcedir C:/Users/zhang/fpga_hdlc/src
 set outputdir C:/Users/zhang/fpga_hdlc/output
 set ipdir C:/Users/zhang/manage_ip 
-file mkdir $outputdir
 
 #STEP# 1: setup design sources and constraints 
 
@@ -19,7 +13,7 @@ read_verilog [glob $verilogdir/insert0.v]
 read_verilog [glob $verilogdir/flag_i0.v]
 read_verilog [glob $verilogdir/dsp_hdlc_ctrl.v]
 read_verilog [glob $verilogdir/cpld_top.v]
-read_verilog [glob $verilogdir/emif_intf.v]
+read_verilog [glob $verilogdir/emif_intf_z.v]
 read_verilog [glob $verilogdir/gpio_intf.v]
 read_verilog [glob $verilogdir/gpio_intr_gen.v]
 
@@ -30,7 +24,7 @@ read_ip  $ipdir/clk_pn_100_25/clk_pn_100_25.xci
 read_ip  $ipdir/ila_8_16384_1120/ila_8_16384_1120.xci
 read_ip  $ipdir/flag_insert0_ram/flag_insert0_ram.xci
 read_ip  $ipdir/hdlc_tx_ram/hdlc_tx_ram.xci
-read_ip  $ipdir/insert0_ram/insert0_ram.xci
+read_ip  $ipdir/insert0_ram/insert0_ram.xci																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				
 read_ip  $ipdir/hdlc_rx_ram/hdlc_rx_ram.xci
 
 #STEP# 2: run synthesis, report utilization and timing estimates, write checkpoint  design 
@@ -42,8 +36,7 @@ write_checkpoint -force $outputdir/post_synth
 report_timing_summary -file $outputdir/post_synth_timing_summary.rpt
 report_power -file $outputdir/post_synth_power.rpt
 
-#STEP# 3: run placement and logic optimization, report utilization and timing
-# estimates, write checkpoint design
+#STEP# 3: run placement and logic optimization, report utilization and timin  # estimates, write checkpoint design
 
 opt_design
 power_opt_design
@@ -69,6 +62,7 @@ write_xdc -no_fixed_only -force $outputdir/top_impl.xdc
 set_property SEVERITY {Warning} [get_drc_checks NSTD-1]
 write_debug_probes -force $sourcedir/top.ltx 
 write_bitstream -force -bin_file $sourcedir/top.bit
+
 #STEP 6: write bit
 # vivado -mode tcl 
 open_hw
