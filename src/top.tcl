@@ -9,7 +9,6 @@ set ipdir C:/Users/zhang/manage_ip
 read_verilog [glob $verilogdir/insert0.v]
 read_verilog [glob $verilogdir/hdlctra.v]
 read_verilog [glob $verilogdir/hdlcrev.v]
-read_verilog [glob $verilogdir/insert0.v]
 read_verilog [glob $verilogdir/flag_i0.v]
 read_verilog [glob $verilogdir/dsp_hdlc_ctrl.v]
 read_verilog [glob $verilogdir/cpld_top.v]
@@ -30,8 +29,11 @@ read_ip  $ipdir/hdlc_rx_ram/hdlc_rx_ram.xci
 #STEP# 2: run synthesis, report utilization and timing estimates, write checkpoint  design 
 
 set_param general.maxThreads 8
+set_msg_config -id {[Synth 8-3917]} -new_severity INFO
 
-synth_design -top top -part xc7vx690tffg1930-2 -flatten rebuilt 
+#synth_design -rtl -name rtl_1 -top top -part xc7vx690tffg1930-2 -flatten rebuilt 
+synth_design -top top -part xc7vx690tffg1930-2 -flatten rebuilt
+
 write_checkpoint -force $outputdir/post_synth
 report_timing_summary -file $outputdir/post_synth_timing_summary.rpt
 report_power -file $outputdir/post_synth_power.rpt
@@ -63,6 +65,7 @@ set_property SEVERITY {Warning} [get_drc_checks NSTD-1]
 write_debug_probes -force $sourcedir/top.ltx 
 write_bitstream -force -bin_file $sourcedir/top.bit
 
+start_gui
 #STEP 6: write bit
 # vivado -mode tcl 
 open_hw
@@ -77,8 +80,6 @@ set_property PROGRAM.FILE {C:/Users/zhang/fpga_hdlc/src/top.bit} [get_hw_devices
 
 program_hw_devices [get_hw_devices xc7vx690t_0] 
 refresh_hw_device [lindex [get_hw_devices xc7vx690t_0] 0]
-
-start_gui
 
 #step 7
 write_hw_ila_data -force C:/Users/zhang/fpga_hdlc1109_ila_1 [upload_hw_ila_data hw_ila_1]

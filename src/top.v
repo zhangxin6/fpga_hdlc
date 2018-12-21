@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`define DEBUG
+//`define DEBUG
 
 module top(
 	input           clk_in1_p           ,
@@ -84,12 +84,12 @@ module top(
 		if(rst_n ==0) clk_2m <= 0; else if(cnt_50 >= 6'd25) clk_2m <= 1; else clk_2m <= 0;
 	end
 
-	wire  emif_dpram_wen,emif_dpram_ren; wire  [15:00]  emif_dpram_wdata,emif_dpram_rdata; wire  [23:00] emif_dpram_addr;
+	wire  emif_dpram_wen,emif_dpram_ren;reg dsp_data_zz_en; wire  [15:00]  emif_dpram_wdata,emif_dpram_rdata; wire  [23:00] emif_dpram_addr;
 
 	emif_intf_z u_emif_intf_z(
-		.clk_ref          (clk_100m                      ),
+		.clk_100m         (clk_100m                      ),
 		.rst_n            (rst_n                         ),
-		.emif_data_z      (DSP_EMIFD                     ),
+		.emif_data_i      (DSP_EMIFD                     ),
 		.emif_addr_i      (DSP_EMIFA                     ),
 		.emif_byten_i     ({DSP_EMIFBE1_N,DSP_EMIFBE0_N} ),
 		.emif_cen_i       (DSP_EMIFCE0_N                 ),
@@ -97,11 +97,18 @@ module top(
 		.emif_oen_i       (DSP_EMIFOE_N                  ),
 
 		.emif_dpram_wen   (emif_dpram_wen                ),
-		.emif_dpram_ren_2 (emif_dpram_ren                ),
+		.emif_dpram_ren   (emif_dpram_ren                ),
 		.emif_dpram_addr  (emif_dpram_addr               ),
-		.emif_dpram_wdata (emif_dpram_wdata              ),
-		.emif_dpram_rdata (emif_dpram_rdata              )
+		.emif_dpram_wdata (emif_dpram_wdata              )
 		);
+		
+	always @(posedge clk_100m)
+	begin	
+		dsp_data_zz_en <= emif_dpram_ren;
+	end		
+		
+	assign DSP_EMIFD = (dsp_data_zz_en==1'b1)? emif_dpram_rdata : 16'hzzzz ;	
+		
 		
 	wire   trastart_flag; wire [9:0] db; wire [7:0] ramd_tx;
 
@@ -170,32 +177,31 @@ module top(
 	wire RS485_4_CLK_R_18_BUF; BUFG u_rs485_bufg (.O(RS485_4_CLK_R_18_BUF),.I(RS485_4_CLK_R_18));
 	
 	hdlcrev u_hdlcrev(
-		.rst_n       ( rst_n            ),
-		.clkr        ( RS485_4_CLK_R_18_BUF ),
-		.datar       ( RS485_4_R_18     ),
-		.flagr       ( 1'b1             ),
-		.ramd        ( ramd_rx          ),
-		.rama        ( rama             ),
-		.hwr         ( hwr              ),
-		.interrupt   ( inr_rx           )
+		.rst_n       ( rst_n                 ),
+		.clkr        ( RS485_4_CLK_R_18_BUF  ),
+		.datar       ( RS485_4_R_18          ),
+		.flagr       ( 1'b1                  ),
+		.ramd        ( ramd_rx               ),
+		.rama        ( rama                  ),
+		.hwr         ( hwr                   ),
+		.interrupt   ( inr_rx                )
 	);
 
 	hdlc_rx_ram u_hdlc_rx_ram (
-	  .clka  ( RS485_4_CLK_R_18_BUF        ),
+	  .clka  ( RS485_4_CLK_R_18_BUF    ),
 	  .ena   ( hwr                     ),
 	  .wea   ( 1'b1                    ),
 	  .addra ( rama                    ),
 	  .dina  ( ramd_rx                 ),
 
 	  .clkb  ( clk_100m                ),
-	  .rstb  ( ~rst_n                  ),
 	  .enb   ( emif_dpram_ren          ),
 	  .addrb ( emif_dpram_addr[7:0]    ),
 	  .doutb ( emif_dpram_rdata        )
 	);
 
-	`ifdef DEBUG
-		ila_8_16384_1120  u_ila_8_16384_1120 (
+	`ifdef DEBUG1
+		ila_8_16384_1120  t_ila_8_16384_1120 (
 			.clk    ( clk_100m         ), 
 			.probe0 (datat             ),
 			.probe1 ( inr_tx           ),
@@ -205,6 +211,20 @@ module top(
 			.probe5 ( ramd_tx          ),
 			.probe6 ( emif_dpram_wdata ),
 			.probe7 (emif_dpram_addr   )
+		);
+	`endif	
+	
+	`ifdef DEBUG
+		ila_8_16384_1120  r_ila_8_16384_1120 (
+			.clk    ( clk_100m                      ), 
+			.probe0 ( {RS485_4_CLK_R_18_BUF,inr_rx} ),      
+			.probe1 ( {RS485_4_R_18,hwr}            ),      
+			.probe2 ( emif_dpram_ren                ),       
+			.probe3 ( emif_dpram_addr[3:0]          ),       
+			.probe4 ( emif_dpram_addr[7:4]          ),       
+			.probe5 ( ramd_rx                       ),        
+			.probe6 ( rama                          ),        
+			.probe7 ( emif_dpram_rdata              )
 		);
 	`endif
 	

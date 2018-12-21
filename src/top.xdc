@@ -1,10 +1,10 @@
 set_property PACKAGE_PIN AN38 [get_ports clk_in1_p]
 set_property IOSTANDARD  LVDS [get_ports clk_in1_p]
-create_clock -period 8 -name clk_in1_p [get_ports clk_in1_p]
+create_clock -period 8 [get_ports clk_in1_p]
 
 set_property PACKAGE_PIN AN39 [get_ports clk_in1_n]
 set_property IOSTANDARD  LVDS [get_ports clk_in1_n]
-create_clock -period 8 -name clk_in1_n [get_ports clk_in1_n]
+create_clock -period 8 [get_ports clk_in1_n]
 
 set_property PACKAGE_PIN AP39 [get_ports sys_rst_n]
 set_property IOSTANDARD LVCMOS18 [get_ports sys_rst_n]
@@ -28,7 +28,7 @@ set_property PACKAGE_PIN BD27 [get_ports RS485_4_CLK_PV_18]
 set_property PACKAGE_PIN BD25 [get_ports RS485_4_CLK_RE_18] 
 set_property PACKAGE_PIN BC25 [get_ports RS485_4_CLK_R_18]
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets RS485_4_CLK_R_18_IBUF]
-  
+
 set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_CLK_DE_18]
 set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_CLK_PV_18]
 set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_CLK_RE_18] 
