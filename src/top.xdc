@@ -12,48 +12,47 @@ set_property IOSTANDARD LVCMOS18 [get_ports sys_rst_n]
 ##//----------------------------------------------------------------------------
 ##//--rs 485
 ##//----------------------------------------------------------------------------
-set_property PACKAGE_PIN AU25 [get_ports RS485_3_CLK_DE_18]
-set_property PACKAGE_PIN AU26 [get_ports RS485_3_CLK_D_18]  
+set_property PACKAGE_PIN AP27 [get_ports RS485_1_CLK_DE_18]
+set_property PACKAGE_PIN AP25 [get_ports RS485_1_CLK_D_18]
+set_property PACKAGE_PIN AN27 [get_ports RS485_1_CLK_PV_18]
+set_property PACKAGE_PIN AN25 [get_ports RS485_1_CLK_RE_18]
+
+set_property IOSTANDARD LVCMOS18 [get_ports RS485_1_CLK_D_18] 
+set_property IOSTANDARD LVCMOS18 [get_ports RS485_1_CLK_DE_18]
+set_property IOSTANDARD LVCMOS18 [get_ports RS485_1_CLK_PV_18]
+set_property IOSTANDARD LVCMOS18 [get_ports RS485_1_CLK_RE_18]
+
+set_property PACKAGE_PIN AU25 [get_ports RS485_3_CLK_DE_18] 
 set_property PACKAGE_PIN AU27 [get_ports RS485_3_CLK_PV_18]
 set_property PACKAGE_PIN AU28 [get_ports RS485_3_CLK_RE_18] 
-
+set_property PACKAGE_PIN AT28 [get_ports RS485_3_CLK_R_18]
  
 set_property IOSTANDARD LVCMOS18 [get_ports RS485_3_CLK_DE_18]
 set_property IOSTANDARD LVCMOS18 [get_ports RS485_3_CLK_PV_18]
-set_property IOSTANDARD LVCMOS18 [get_ports RS485_3_CLK_D_18] 
+set_property IOSTANDARD LVCMOS18 [get_ports RS485_3_CLK_R_18] 
 set_property IOSTANDARD LVCMOS18 [get_ports RS485_3_CLK_RE_18]
 
-set_property PACKAGE_PIN AM27 [get_ports RS485_4_CLK_DE_18]
-set_property PACKAGE_PIN BD27 [get_ports RS485_4_CLK_PV_18]
-set_property PACKAGE_PIN BD25 [get_ports RS485_4_CLK_RE_18] 
-set_property PACKAGE_PIN BC25 [get_ports RS485_4_CLK_R_18]
-set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets RS485_4_CLK_R_18_IBUF]
+set_property PACKAGE_PIN AM28 [get_ports RS485_1_DE_18]
+set_property PACKAGE_PIN AL26 [get_ports RS485_1_D_18]
+set_property PACKAGE_PIN AM26 [get_ports RS485_1_PV_18]
+set_property PACKAGE_PIN AM25 [get_ports RS485_1_RE_18]
 
-set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_CLK_DE_18]
-set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_CLK_PV_18]
-set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_CLK_RE_18] 
-set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_CLK_R_18]
+set_property IOSTANDARD LVCMOS18 [get_ports RS485_1_D_18] 
+set_property IOSTANDARD LVCMOS18 [get_ports RS485_1_DE_18]
+set_property IOSTANDARD LVCMOS18 [get_ports RS485_1_PV_18]
+set_property IOSTANDARD LVCMOS18 [get_ports RS485_1_RE_18]
 
 set_property PACKAGE_PIN AT26 [get_ports RS485_3_DE_18]
 set_property PACKAGE_PIN AR28 [get_ports RS485_3_PV_18]
-set_property PACKAGE_PIN AR27 [get_ports RS485_3_D_18] 
+set_property PACKAGE_PIN AP26 [get_ports RS485_3_R_18] 
 set_property PACKAGE_PIN AR26 [get_ports RS485_3_RE_18]
  
 set_property IOSTANDARD LVCMOS18 [get_ports RS485_3_DE_18]
 set_property IOSTANDARD LVCMOS18 [get_ports RS485_3_PV_18]
-set_property IOSTANDARD LVCMOS18 [get_ports RS485_3_D_18] 
+set_property IOSTANDARD LVCMOS18 [get_ports RS485_3_R_18] 
 set_property IOSTANDARD LVCMOS18 [get_ports RS485_3_RE_18]
 
-set_property PACKAGE_PIN BC27 [get_ports RS485_4_DE_18]
-set_property PACKAGE_PIN BB27 [get_ports RS485_4_PV_18]
-set_property PACKAGE_PIN BB26 [get_ports RS485_4_R_18] 
-set_property PACKAGE_PIN BA25 [get_ports RS485_4_RE_18]
- 
-set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_DE_18]
-set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_PV_18]
-set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_R_18] 
-set_property IOSTANDARD LVCMOS18 [get_ports RS485_4_RE_18]
-
+set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets RS485_3_CLK_R_18_IBUF]
 
 set_property PACKAGE_PIN AL20 [get_ports {DSP_EMIFA[0]}]
 set_property PACKAGE_PIN AL19 [get_ports {DSP_EMIFA[1]}]

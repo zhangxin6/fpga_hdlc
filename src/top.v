@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-//`define DEBUG
+`define DEBUG
 
 module top(
 	input           clk_in1_p           ,
@@ -47,25 +47,25 @@ module top(
 	output          boot_strap0_14      ,  // GPIO[14]
 	output          boot_strap0_15      ,  // GPIO[15]
 	/*******************RS485****************************/
+	output          RS485_1_CLK_DE_18   ,
+	output          RS485_1_CLK_D_18    ,
+	output          RS485_1_CLK_PV_18   ,
+	output          RS485_1_CLK_RE_18   ,
+                    
+	output          RS485_1_DE_18       ,
+	output          RS485_1_D_18        ,
+	output          RS485_1_PV_18       ,
+	output          RS485_1_RE_18       ,
+                    
 	output          RS485_3_CLK_DE_18   ,
-	output          RS485_3_CLK_D_18    ,
 	output          RS485_3_CLK_PV_18   ,
 	output          RS485_3_CLK_RE_18   ,
+	input           RS485_3_CLK_R_18    ,
                     
 	output          RS485_3_DE_18       ,
-	output          RS485_3_D_18        ,
 	output          RS485_3_PV_18       ,
 	output          RS485_3_RE_18       ,
-                    
-	output          RS485_4_CLK_DE_18   ,
-	output          RS485_4_CLK_PV_18   ,
-	output          RS485_4_CLK_RE_18   ,
-	input           RS485_4_CLK_R_18    ,
-                    
-	output          RS485_4_DE_18       ,
-	output          RS485_4_PV_18       ,
-	output          RS485_4_RE_18       ,
-	input           RS485_4_R_18
+	input           RS485_3_R_18
 	);
 
     wire clk_100m, clk_25m, rst_n; wire sys_rst = ~sys_rst_n;
@@ -174,12 +174,13 @@ module top(
 	wire [7: 0] ramd_rx;  wire [8:0] rama; wire hwr, inr_rx;
 
 	
-	wire RS485_4_CLK_R_18_BUF; BUFG u_rs485_bufg (.O(RS485_4_CLK_R_18_BUF),.I(RS485_4_CLK_R_18));
+	wire RS485_2_CLK_R_18_BUF; BUFG u_rs485_bufg (.O(RS485_3_CLK_R_18_BUF),.I(RS485_3_CLK_R_18));
 	
 	hdlcrev u_hdlcrev(
 		.rst_n       ( rst_n                 ),
-		.clkr        ( RS485_4_CLK_R_18_BUF  ),
-		.datar       ( RS485_4_R_18          ),
+		.clk_100m    ( clk_100m              ),
+		.clkr        ( RS485_3_CLK_R_18_BUF  ),
+		.datar       ( RS485_3_R_18          ),
 		.flagr       ( 1'b1                  ),
 		.ramd        ( ramd_rx               ),
 		.rama        ( rama                  ),
@@ -188,7 +189,7 @@ module top(
 	);
 
 	hdlc_rx_ram u_hdlc_rx_ram (
-	  .clka  ( RS485_4_CLK_R_18_BUF    ),
+	  .clka  ( RS485_2_CLK_R_18_BUF    ),
 	  .ena   ( hwr                     ),
 	  .wea   ( 1'b1                    ),
 	  .addra ( rama                    ),
@@ -217,8 +218,8 @@ module top(
 	`ifdef DEBUG
 		ila_8_16384_1120  r_ila_8_16384_1120 (
 			.clk    ( clk_100m                      ), 
-			.probe0 ( {RS485_4_CLK_R_18_BUF,inr_rx} ),      
-			.probe1 ( {RS485_4_R_18,hwr}            ),      
+			.probe0 ( {RS485_3_CLK_R_18_BUF,inr_rx} ),      
+			.probe1 ( {RS485_3_R_18,hwr}            ),      
 			.probe2 ( emif_dpram_ren                ),       
 			.probe3 ( emif_dpram_addr[3:0]          ),       
 			.probe4 ( emif_dpram_addr[7:4]          ),       
@@ -228,12 +229,12 @@ module top(
 		);
 	`endif
 	
-	assign RS485_3_CLK_RE_18=1;assign RS485_4_CLK_RE_18=0;assign RS485_3_CLK_DE_18=1;assign RS485_4_CLK_DE_18=0;
-	assign RS485_3_RE_18    =1;assign RS485_4_RE_18    =0;assign RS485_3_DE_18    =1;assign RS485_4_DE_18    =0;
-	assign RS485_3_CLK_PV_18=1;assign RS485_4_CLK_PV_18=1;assign RS485_3_PV_18    =1;assign RS485_4_PV_18    =1;
+	assign RS485_1_CLK_RE_18=1;assign RS485_3_CLK_RE_18=0;assign RS485_1_CLK_DE_18=1;assign RS485_3_CLK_DE_18=0;
+	assign RS485_1_RE_18    =1;assign RS485_3_RE_18    =0;assign RS485_1_DE_18    =1;assign RS485_3_DE_18    =0;
+	assign RS485_1_CLK_PV_18=1;assign RS485_3_CLK_PV_18=1;assign RS485_1_PV_18    =1;assign RS485_3_PV_18    =1;
 	
 	assign boot_strap0_14   = 0;      assign boot_strap0_15 = inr_rx;
-	assign RS485_3_CLK_D_18 = clk_2m; assign RS485_3_D_18   = datat;
+	assign RS485_1_CLK_D_18 = clk_2m; assign RS485_1_D_18   = datat;
 	
 	assign DSP_EMIFWAIT0 = 0; assign DSP_EMIFWAIT1 = 0; 
 
