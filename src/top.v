@@ -174,7 +174,7 @@ module top(
 	wire [7: 0] ramd_rx;  wire [8:0] rama; wire hwr, inr_rx;
 
 	
-	wire RS485_2_CLK_R_18_BUF; BUFG u_rs485_bufg (.O(RS485_3_CLK_R_18_BUF),.I(RS485_3_CLK_R_18));
+	wire RS485_3_CLK_R_18_BUF; BUFG u_rs485_bufg (.O(RS485_3_CLK_R_18_BUF),.I(RS485_3_CLK_R_18));
 	
 	hdlcrev u_hdlcrev(
 		.rst_n       ( rst_n                 ),
@@ -189,7 +189,7 @@ module top(
 	);
 
 	hdlc_rx_ram u_hdlc_rx_ram (
-	  .clka  ( RS485_2_CLK_R_18_BUF    ),
+	  .clka  ( RS485_3_CLK_R_18_BUF    ),
 	  .ena   ( hwr                     ),
 	  .wea   ( 1'b1                    ),
 	  .addra ( rama                    ),
