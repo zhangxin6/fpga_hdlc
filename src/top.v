@@ -47,7 +47,7 @@ module top(
 	output          boot_strap0_14      ,  // GPIO[14]
 	output          boot_strap0_15      ,  // GPIO[15]
 	/*******************RS485****************************/
-	output          RS485_1_CLK_DE_18   ,
+ 	output          RS485_1_CLK_DE_18   ,
 	output          RS485_1_CLK_D_18    ,
 	output          RS485_1_CLK_PV_18   ,
 	output          RS485_1_CLK_RE_18   ,
@@ -55,7 +55,7 @@ module top(
 	output          RS485_1_DE_18       ,
 	output          RS485_1_D_18        ,
 	output          RS485_1_PV_18       ,
-	output          RS485_1_RE_18       ,
+	output          RS485_1_RE_18       , 
                     
 	output          RS485_3_CLK_DE_18   ,
 	output          RS485_3_CLK_PV_18   ,
@@ -86,7 +86,7 @@ module top(
 
 	wire  emif_dpram_wen,emif_dpram_ren;reg dsp_data_zz_en; wire  [15:00]  emif_dpram_wdata,emif_dpram_rdata; wire  [23:00] emif_dpram_addr;
 
-	emif_intf_z u_emif_intf_z(
+ 	emif_intf_z u_emif_intf_z(
 		.clk_100m         (clk_100m                      ),
 		.rst_n            (rst_n                         ),
 		.emif_data_i      (DSP_EMIFD                     ),
@@ -100,17 +100,17 @@ module top(
 		.emif_dpram_ren   (emif_dpram_ren                ),
 		.emif_dpram_addr  (emif_dpram_addr               ),
 		.emif_dpram_wdata (emif_dpram_wdata              )
-		);
+		); 
 		
-	always @(posedge clk_100m)
+ 	always @(posedge clk_100m)
 	begin	
 		dsp_data_zz_en <= emif_dpram_ren;
 	end		
 		
-	assign DSP_EMIFD = (dsp_data_zz_en==1'b1)? emif_dpram_rdata : 16'hzzzz ;	
+	assign DSP_EMIFD = (dsp_data_zz_en==1'b1)? emif_dpram_rdata : 16'hzzzz ;	 
 		
 		
-	wire   trastart_flag; wire [9:0] db; wire [7:0] ramd_tx;
+ 	wire   trastart_flag; wire [9:0] db; wire [7:0] ramd_tx;
 
 	dsp_hdlc_ctrl  u_dsp_hdlc_ctrl(
 		.clk_100m        ( clk_100m          ),
@@ -123,10 +123,10 @@ module top(
 		.trastart_flag   ( trastart_flag     ),
 	    .db              ( db                ),
 	    .ramd            ( ramd_tx           )
-	);
+	); 
 
 	wire datat, inr_tx;
-	hdlctra  u_hdlctra(
+ 	hdlctra  u_hdlctra(
 		.clk           ( clk_2m        ),
 		.rst_n         ( rst_n         ),
 		.trastart_flag ( trastart_flag ),
@@ -135,7 +135,7 @@ module top(
 
 		.datat         ( datat         ),
 	    .inr           ( inr_tx        )
-	);
+	); 
 
 	cpld_top u_cpld_top(
 		.hard_rst_n        (rst_n         ),
@@ -188,7 +188,7 @@ module top(
 		.interrupt   ( inr_rx                )
 	);
 
-	hdlc_rx_ram u_hdlc_rx_ram (
+ 	hdlc_rx_ram u_hdlc_rx_ram (
 	  .clka  ( RS485_3_CLK_R_18_BUF    ),
 	  .ena   ( hwr                     ),
 	  .wea   ( 1'b1                    ),
@@ -199,7 +199,7 @@ module top(
 	  .enb   ( emif_dpram_ren          ),
 	  .addrb ( emif_dpram_addr[7:0]    ),
 	  .doutb ( emif_dpram_rdata        )
-	);
+	); 
 
 	`ifdef DEBUG1
 		ila_8_16384_1120  t_ila_8_16384_1120 (
@@ -229,11 +229,23 @@ module top(
 		);
 	`endif
 	
-	assign RS485_1_CLK_RE_18=1;assign RS485_3_CLK_RE_18=0;assign RS485_1_CLK_DE_18=1;assign RS485_3_CLK_DE_18=0;
-	assign RS485_1_RE_18    =1;assign RS485_3_RE_18    =0;assign RS485_1_DE_18    =1;assign RS485_3_DE_18    =0;
-	assign RS485_1_CLK_PV_18=1;assign RS485_3_CLK_PV_18=1;assign RS485_1_PV_18    =1;assign RS485_3_PV_18    =1;
+	assign RS485_1_CLK_RE_18=1;
+	assign RS485_1_RE_18    =1;
+	assign RS485_1_CLK_PV_18=1;
+	assign RS485_1_CLK_DE_18=1;
+	assign RS485_1_DE_18    =1;
+	assign RS485_1_PV_18    =1;	
 	
-	assign boot_strap0_14   = 0;      assign boot_strap0_15 = inr_rx;
+	
+	assign RS485_3_CLK_RE_18=0;
+	assign RS485_3_RE_18    =0;
+	assign RS485_3_CLK_PV_18=1;
+	assign RS485_3_CLK_DE_18=0;
+	assign RS485_3_DE_18    =0;
+	assign RS485_3_PV_18    =1;
+	
+	//assign boot_strap0_14   = 0;      
+	assign boot_strap0_15 = inr_rx;
 	assign RS485_1_CLK_D_18 = clk_2m; assign RS485_1_D_18   = datat;
 	
 	assign DSP_EMIFWAIT0 = 0; assign DSP_EMIFWAIT1 = 0; 
