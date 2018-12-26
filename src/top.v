@@ -70,7 +70,15 @@ module top(
 
     wire clk_100m, clk_25m, rst_n; wire sys_rst = ~sys_rst_n;
 
-	clk_pn_100_25(clk_100m, clk_25m,sys_rst,rst_n,clk_in1_p,clk_in1_n);
+	clk_pn_100_25 u_clk_pn_100_25(
+		.clk_in1_p         (clk_in1_p ),
+		.clk_in1_n         (clk_in1_n ),
+		.reset             (sys_rst   ),
+		
+		.clk_out1          (clk_25m   ),
+		.clk_out2          (clk_100m  ),
+		.locked            (rst_n     )
+	); 
 
 	reg [5:0] cnt_50;
     always @(posedge clk_100m or negedge rst_n)
@@ -220,14 +228,23 @@ module top(
 			.clk    ( clk_100m                      ), 
 			.probe0 ( {RS485_3_CLK_R_18_BUF,inr_rx} ),      
 			.probe1 ( {RS485_3_R_18,hwr}            ),      
-			.probe2 ( emif_dpram_ren                ),       
-			.probe3 ( emif_dpram_addr[3:0]          ),       
-			.probe4 ( emif_dpram_addr[7:4]          ),       
+			.probe2 ( {emif_dpram_ren,RS485_1_CLK_D_18,RS485_1_D_18} ),       
+			.probe3 ( 4'd0          ),       
+			.probe4 ( 4'd0          ),       
 			.probe5 ( ramd_rx                       ),        
-			.probe6 ( rama                          ),        
-			.probe7 ( emif_dpram_rdata              )
+			.probe6 ( {rama,trastart_flag,inr_tx}   ),        
+			.probe7 ( {emif_dpram_rdata,emif_dpram_addr,emif_dpram_wen} )
 		);
 	`endif
+	
+    reg datat1,datat2;
+	
+	always @(negedge clk_2m)
+	begin	
+		datat1 <= datat ;
+		datat2 <= datat1;
+	end	
+	
 	
 	assign RS485_1_CLK_RE_18=1;
 	assign RS485_1_RE_18    =1;
@@ -246,7 +263,9 @@ module top(
 	
 	//assign boot_strap0_14   = 0;      
 	assign boot_strap0_15 = inr_rx;
-	assign RS485_1_CLK_D_18 = clk_2m; assign RS485_1_D_18   = datat;
+	assign RS485_1_CLK_D_18 = clk_2m; 
+	
+	assign RS485_1_D_18 = datat2;
 	
 	assign DSP_EMIFWAIT0 = 0; assign DSP_EMIFWAIT1 = 0; 
 
